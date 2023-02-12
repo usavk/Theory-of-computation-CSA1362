@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_STATES 10
+#define MAX_TRANSITIONS 10
+
+int delta[MAX_STATES][MAX_TRANSITIONS][2];
+int num_states, num_transitions;
+char input[100];
+
+void simulate_nfa(int state, int index) {
+    if (index == strlen(input)) {
+        if (state == num_states - 1) {
+            printf("Accepted\n");
+            return;
+        }
+    }
+    int i;
+    for (i = 0; i < num_transitions; i++) {
+        if (delta[state][i][0] == input[index] || delta[state][i][0] == -1) {
+            int j;
+            for (j = 0; j < MAX_STATES; j++) {
+                if (delta[state][i][1] == j || delta[state][i][1] == -1) {
+                    simulate_nfa(j, index + 1);
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    int i, j;
+
+    printf("Enter the input string: ");
+    scanf("%s", input);
+
+    num_states = 4;
+    num_transitions = 3;
+
+    // Define the NFA transitions
+    delta[0][0][0] = 'b'; delta[0][0][1] = 1;
+    delta[1][0][0] = 'a'; delta[1][0][1] = 2;
+    delta[2][0][0] = -1; delta[2][0][1] = 3;
+
+    delta[0][1][0] = 'b'; delta[0][1][1] = 2;
+    delta[2][1][0] = 'a'; delta[2][1][1] = 3;
+
+    delta[0][2][0] = -1; delta[0][2][1] = -1;
+    delta[1][1][0] = -1; delta[1][1][1] = -1;
+    delta[2][2][0] = -1; delta[2][2][1] = -1;
+
+    simulate_nfa(0, 0);
+
+    return 0;
+}
