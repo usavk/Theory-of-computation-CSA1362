@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <string.h>
+
+// NFA transitions
+int nfa_transitions(int state, char input) {
+    int nfa_table[3][2] = {{1, -1}, {-1, 2}, {-1, -1}}; // NFA table
+    if (input == 'o')
+        return nfa_table[state][0];
+    else if (input == '1')
+        return nfa_table[state][1];
+    else
+        return -1;
+}
+
+// NFA function
+int nfa(char *str) {
+    int state = 0; // initial state
+    int i, len;
+    len = strlen(str); // length of input string
+    for (i = 0; i < len; i++) {
+        state = nfa_transitions(state, str[i]);
+        if (state == -1)
+            return 0; // invalid input
+    }
+    return state == 2; // accept only if final state is 2
+}
+
+// main function
+int main() {
+    char str[100];
+    printf("Enter a string: ");
+    scanf("%s", str);
+    if (nfa(str))
+        printf("Valid string\n");
+    else
+        printf("Invalid string\n");
+    return 0;
+}
