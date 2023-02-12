@@ -1,0 +1,2 @@
+39.	Design DFA using simulator to accept the string the end with abc over set {a,b,c)
+          W=  abbaababc
