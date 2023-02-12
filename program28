@@ -1,0 +1,2 @@
+28.	Design DFA using simulator to accept the string the end with ab over set {a,b)
+          W=  abbaabab
