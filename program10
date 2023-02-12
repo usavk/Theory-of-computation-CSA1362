@@ -1,0 +1,77 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+// Maximum number of states and transitions
+#define MAX_STATES 10
+#define MAX_TRANSITIONS 10
+
+// NFA structure
+typedef struct nfa {
+    int num_states; // number of states
+    int num_inputs; // number of inputs
+    int initial_state; // initial state
+    int num_final_states; // number of final states
+    int final_states[MAX_STATES]; // final states
+    int transitions[MAX_STATES][MAX_TRANSITIONS][2]; // transitions
+} NFA;
+
+// Epsilon closure function
+void epsilon_closure(int state, bool visited[], NFA nfa, int ec[]) {
+    int i;
+    visited[state] = true;
+    ec[state] = true;
+    for (i = 0; i < nfa.num_transitions; i++) {
+        if (nfa.transitions[state][i][0] == -1 && !visited[nfa.transitions[state][i][1]]) {
+            epsilon_closure(nfa.transitions[state][i][1], visited, nfa, ec);
+        }
+    }
+}
+
+// Main function
+int main() {
+    NFA nfa;
+    int i, j, k;
+    printf("Enter the number of states: ");
+    scanf("%d", &nfa.num_states);
+    printf("Enter the number of inputs: ");
+    scanf("%d", &nfa.num_inputs);
+    printf("Enter the initial state: ");
+    scanf("%d", &nfa.initial_state);
+    printf("Enter the number of final states: ");
+    scanf("%d", &nfa.num_final_states);
+    printf("Enter the final states: ");
+    for (i = 0; i < nfa.num_final_states; i++) {
+        scanf("%d", &nfa.final_states[i]);
+    }
+    printf("Enter the transitions (-1 -1 to end):\n");
+    for (i = 0; i < nfa.num_states; i++) {
+        for (j = 0; j < nfa.num_inputs; j++) {
+            k = 0;
+            while (true) {
+                scanf("%d", &nfa.transitions[i][j][k]);
+                if (nfa.transitions[i][j][k] == -1)
+                    break;
+                k++;
+            }
+        }
+    }
+    int ec[nfa.num_states][nfa.num_states];
+    for (i = 0; i < nfa.num_states; i++) {
+        bool visited[nfa.num_states];
+        for (j = 0; j < nfa.num_states; j++) {
+            visited[j] = false;
+            ec[i][j] = false;
+        }
+        epsilon_closure(i, visited, nfa, ec[i]);
+    }
+    printf("Epsilon closure:\n");
+    for (i = 0; i < nfa.num_states; i++) {
+        printf("state %d: ", i);
+        for (j = 0; j < nfa.num_states; j++) {
+            if (ec[i][j])
+                printf("%d ", j);
+        }
+        printf("\n");
+    }
+    return 0;
+}
